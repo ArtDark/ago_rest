@@ -76,7 +76,7 @@ func (s *Service) Save(ctx context.Context, itemToSave *Offer) (*Offer, error) {
 			ctx,
 			`INSERT INTO offers (company, percent, comment) VALUES($1, $2, $3) RETURNING id`,
 			itemToSave.Company, itemToSave.Percent, itemToSave.Comment,
-		).Scan(&itemToSave.ID);
+		).Scan(&itemToSave.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -95,4 +95,29 @@ func (s *Service) Save(ctx context.Context, itemToSave *Offer) (*Offer, error) {
 		return nil, errors.New("No rows updated")
 	}
 	return itemToSave, nil
+}
+
+func (s *Service) DelById(ctx context.Context, id int64) (*Offer, error) {
+	item := &Offer{ID: id}
+
+	err := s.pool.QueryRow(
+		ctx,
+		`SELECT company, percent, comment FROM offers WHERE id = $1`,
+		id,
+	).Scan(&item.Company, &item.Percent, &item.Comment)
+
+	if err != nil {
+		return nil, errors.New("no row for delete")
+	}
+
+	_, err = s.pool.Exec(
+		ctx,
+		`DELETE from offers WHERE id =$1`,
+		id,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return item, nil
 }

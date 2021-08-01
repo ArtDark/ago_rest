@@ -3,9 +3,9 @@ package app
 import (
 	"encoding/json"
 	"github.com/go-chi/chi"
-	"log"
 	"net/http"
 	"rest/pkg/offers"
+	"rest/pkg/rest"
 	"strconv"
 )
 
@@ -38,16 +38,10 @@ func (s *Server) handleGetOffers(writer http.ResponseWriter, request *http.Reque
 		return
 	}
 
-	data, err := json.Marshal(items)
+	err = rest.WriteAsJSON(writer, items)
 	if err != nil {
 		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
-	}
-
-	writer.Header().Set("Content-Type", "application/json")
-	_, err = writer.Write(data)
-	if err != nil {
-		log.Print(err)
 	}
 }
 
@@ -66,16 +60,10 @@ func (s *Server) handleGetOfferByID(writer http.ResponseWriter, request *http.Re
 		return
 	}
 
-	data, err := json.Marshal(item)
+	err = rest.WriteAsJSON(writer, item)
 	if err != nil {
 		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
-	}
-
-	writer.Header().Set("Content-Type", "application/json")
-	_, err = writer.Write(data)
-	if err != nil {
-		log.Print(err)
 	}
 }
 
@@ -93,19 +81,31 @@ func (s *Server) handleSaveOffer(writer http.ResponseWriter, request *http.Reque
 		return
 	}
 
-	data, err := json.Marshal(item)
+	err = rest.WriteAsJSON(writer, item)
 	if err != nil {
 		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-
-	writer.Header().Set("Content-Type", "application/json")
-	_, err = writer.Write(data)
-	if err != nil {
-		log.Print(err)
-	}
 }
 
 func (s *Server) handleRemoveOfferByID(writer http.ResponseWriter, request *http.Request) {
-	panic("not implemented")
+	idParam := chi.URLParam(request, "id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		http.Error(writer, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	item, err := s.offersSvc.DelById(request.Context(), id)
+	if err != nil {
+
+		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	err = rest.WriteAsJSON(writer, item)
+	if err != nil {
+		http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 }

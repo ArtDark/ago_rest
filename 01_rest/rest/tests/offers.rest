@@ -61,3 +61,16 @@ client.test("Request executed successfully", function() {
 });
 %}
 
+### Удаление предложения по id
+
+DELETE http://localhost:9999/offers/{{offerId}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+  client.assert(response.contentType.mimeType === "application/json", "Expected 'application/json' but received '" + response.contentType.mimeType + "'");
+  client.assert(response.body.company === "Delivery Club", "Invalid company");
+});
+%}
+
+
