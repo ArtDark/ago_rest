@@ -1,1 +1,0 @@
-Use public key from auth service
