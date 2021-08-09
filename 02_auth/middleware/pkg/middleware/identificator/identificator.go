@@ -39,4 +39,3 @@ func Identifier(ctx context.Context) (*string, error) {
 	}
 	return value, nil
 }
-
