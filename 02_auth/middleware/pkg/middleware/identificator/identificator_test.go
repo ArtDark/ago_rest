@@ -36,8 +36,23 @@ func TestIdentificatorHTTPMux(t *testing.T) {
 		args args
 		want []byte
 	}{
-		{name: "GET", args: args{method: "GET", path: "/get", addr: "192.0.2.1:12345"}, want: []byte("192.0.2.1")},
-		// TODO: write for other methods
+		{
+			name: "GET",
+			args: args{
+				method: "GET",
+				path:   "/get",
+				addr:   "192.0.2.1:12345",
+			},
+			want: []byte("192.0.2.1")},
+		{
+			name: "GET",
+			args: args{
+				method: "GET",
+				path:   "/",
+				addr:   "8.8.8.8",
+			},
+			want: []byte("404 page not found"),
+		}, // TODO: write for other methods
 	}
 
 	for _, tt := range tests {
@@ -82,7 +97,16 @@ func TestIdentificatorChi(t *testing.T) {
 		want []byte
 	}{
 		{name: "GET", args: args{method: "GET", path: "/get", addr: "192.0.2.1:12345"}, want: []byte("192.0.2.1")},
-		// TODO: write for other methods
+		{
+			name: "GET",
+			args: args{
+				method: "GET",
+				path:   "/",
+				addr:   "8.8.8.8",
+			},
+			want: []byte("404 page not found"),
+		}, // TODO: write for other methods// TODO: write for other methods
+
 	}
 
 	for _, tt := range tests {

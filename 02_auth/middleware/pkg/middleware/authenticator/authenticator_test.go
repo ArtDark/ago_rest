@@ -44,7 +44,14 @@ func TestAuthenticatorHTTPMux(t *testing.T) {
 		want []byte
 	}{
 		{name: "GET", args: args{method: "GET", path: "/get"}, want: []byte("USERAUTH")},
-		// TODO: write for other methods
+		{
+			name: "POST",
+			args: args{
+				method: "POST",
+				path:   "/post",
+			},
+			want: []byte(`got 404 page not found`),
+		},
 	}
 
 	for _, tt := range tests {

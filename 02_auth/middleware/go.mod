@@ -1,4 +1,4 @@
-module github.com/netology-code/middleware
+module github.com/ArtDark/ago-auth
 
 go 1.14
 
